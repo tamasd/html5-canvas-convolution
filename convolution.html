@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <title>Canvas convolution demo</title>
+    <style type="text/css">
+    </style>
+    <script type="text/javascript"
+      src="jquery-1.4.2.min.js"></script>
+    <script type="text/javascript">
+      var masks = {};
+
+      masks.average = function() {
+        $('form#mask fieldset.mask input')
+          .val(1 / $('form#mask fieldset.mask input').size());
+      };
+
+      function getMask() {
+        var mask = [];
+        var masksize = $('form#mask input[type=range]').val();
+        var row = [];
+
+        $('form#mask fieldset.mask input').each(function(i, item) {
+          var val = parseFloat($(item).val());
+          if(isNaN(val)) {
+            val = 0.0;
+          }
+          row[row.length] = val;
+          if((i + 1) % masksize === 0) {
+            mask[mask.length] = row;
+            row = [];
+          }
+        });
+
+        return mask;
+      }
+
+      function doConvolution(canvas, mask) {
+        var can = document.getElementById(canvas);
+        var ctx = can.getContext('2d');
+        var w = can.width, h = can.height;
+
+        var input = ctx.getImageData(0, 0, w, h);
+        var result = ctx.createImageData(w, h);
+        // floor instead of ceil, because we are
+        // indexing from 0
+        var maskhalf = Math.floor(mask.length / 2);
+
+        var r = 0, g = 1, b = 2, alpha = 3;
+
+        for(var y = 0; y < h-1; y++) {
+          for(var x = 0; x < w-1; x++) {
+            var pixel = (y*w + x)*4;
+            var sumr = 0, sumg = 0, sumb = 0;
+            for(var masky in mask) {
+              for(var maskx in mask[masky]) {
+                var convpixel = ((y+(masky-maskhalf)) * w + (x+(maskx-maskhalf))) * 4;
+                sumr += input.data[convpixel + r] * mask[masky][maskx];
+                sumg += input.data[convpixel + g] * mask[masky][maskx];
+                sumb += input.data[convpixel + b] * mask[masky][maskx];
+              }
+            }
+            result.data[pixel + r] = sumr;
+            result.data[pixel + g] = sumg;
+            result.data[pixel + b] = sumb;
+            // just copy the alpha channel
+            result.data[pixel + alpha] = input.data[pixel + alpha];
+          }
+        }
+
+        ctx.putImageData(result, 0, 0);
+      }
+
+      function setCanvasImage(canvas, url) {
+        $('#'+canvas).parent()
+        .html('')
+        .html('<canvas id="image"></canvas>');
+        var can = document.getElementById(canvas);
+        var ctx = can.getContext('2d');
+        var img = new Image();
+        img.onload = function() {
+          can.width = img.width;
+          can.height = img.height;
+          ctx.drawImage(img, 0, 0, img.width, img.height);
+        };
+        img.src = url;
+      }
+
+      $(function() {
+
+        $('a#apply-average-mask').click(function(event) {
+          event.preventDefault();
+          masks.average();
+          return false;
+        });
+
+        $('form#url').submit(function(event) {
+          event.preventDefault();
+          setCanvasImage('image', $('form#url input[name=image-url]').val());
+          return false;
+        });
+
+        $('form#url-randomcat').submit(function(event) {
+          event.preventDefault();
+          // this part is converted to PHP,
+          // because of the canvas element's
+          // same origin policy
+          setCanvasImage('image', 'randomcat.php');
+          return false;
+        });
+
+        $('form#mask').submit(function(event) {
+          event.preventDefault();
+          doConvolution('image', getMask());
+          return false;
+        });
+
+        $('form#mask input[type=range]')
+        .change(function() {
+          $('form#mask fieldset.mask input').remove();
+          var num = parseInt($(this).val(), 10);
+          var html = '';
+          for(var i = 0; i < num; i++) {
+            for(var j = 0; j < num; j++) {
+              html += "<input type=\"text\" value=\"0\" name=\"mask-" + i + "-" + j + "\" />\n";
+            }
+            html += '<br/>';
+          }
+          $('fieldset.mask').html(html);
+        })
+        .trigger('change');
+        
+      });
+    </script>
+  </head>
+  <body>
+    <h1> HTML5 Canvas convolution </h1>
+    <form action="" id="url">
+      <input type="text" name="image-url" />
+      <input type="submit" value="Set" />
+    </form>
+    <form action="" id="url-randomcat">
+      <input type="submit" value="Random cat" />
+    </form>
+    <form action="" id="mask">
+      <input type="range" name="convolution-mask" min="3" max="11" value="3" step="2" />
+      <fieldset class="mask">
+        <legend></legend>
+      </fieldset>
+      <section>
+        <header>Mask presets</header>
+        <p><a href="#" id="apply-average-mask">Average</a></p>
+      </section>
+      <input type="submit" value="Convolve" />
+    </form>
+    <div class="canvas-container"><canvas id="image"></canvas></div>
+  </body>
+</html>
