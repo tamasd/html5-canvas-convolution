@@ -8,6 +8,10 @@
     <script type="text/javascript"
       src="jquery-1.4.2.min.js"></script>
     <script type="text/javascript">
+      // since spawning a worker is resource heavy
+      // we only do it once
+      var worker = new Worker('convolution.js');
+      
       var masks = {};
 
       masks.average = function() {
@@ -33,42 +37,6 @@
         });
 
         return mask;
-      }
-
-      function doConvolution(canvas, mask) {
-        var can = document.getElementById(canvas);
-        var ctx = can.getContext('2d');
-        var w = can.width, h = can.height;
-
-        var input = ctx.getImageData(0, 0, w, h);
-        var result = ctx.createImageData(w, h);
-        // floor instead of ceil, because we are
-        // indexing from 0
-        var maskhalf = Math.floor(mask.length / 2);
-
-        var r = 0, g = 1, b = 2, alpha = 3;
-
-        for(var y = 0; y < h-1; y++) {
-          for(var x = 0; x < w-1; x++) {
-            var pixel = (y*w + x)*4;
-            var sumr = 0, sumg = 0, sumb = 0;
-            for(var masky in mask) {
-              for(var maskx in mask[masky]) {
-                var convpixel = ((y+(masky-maskhalf)) * w + (x+(maskx-maskhalf))) * 4;
-                sumr += input.data[convpixel + r] * mask[masky][maskx];
-                sumg += input.data[convpixel + g] * mask[masky][maskx];
-                sumb += input.data[convpixel + b] * mask[masky][maskx];
-              }
-            }
-            result.data[pixel + r] = sumr;
-            result.data[pixel + g] = sumg;
-            result.data[pixel + b] = sumb;
-            // just copy the alpha channel
-            result.data[pixel + alpha] = input.data[pixel + alpha];
-          }
-        }
-
-        ctx.putImageData(result, 0, 0);
       }
 
       function setCanvasImage(canvas, url) {
@@ -111,7 +79,24 @@
 
         $('form#mask').submit(function(event) {
           event.preventDefault();
-          doConvolution('image', getMask());
+          //doConvolution(document.getElementById('image'), getMask());
+          var canvas = document.getElementById('image');
+          var ctx = canvas.getContext('2d');
+          var w = canvas.width, h = canvas.height;
+          var input = ctx.getImageData(0, 0, w, h);
+          var result = ctx.createImageData(w, h);
+          worker.onmessage = function(event) {
+            document.getElementById('image')
+            .getContext('2d')
+            .putImageData(event.data, 0, 0);
+          }
+          worker.postMessage({
+            'input': input,
+            'result': result,
+            'w': w,
+            'h': h,
+            'mask': getMask()
+          });
           return false;
         });
 
