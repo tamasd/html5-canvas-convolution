@@ -127,7 +127,7 @@ $(function() {
     return false;
   });
 
-  $('form#url-randomcat').submit(function(event) {
+  $('form#url-randompic').submit(function(event) {
     event.preventDefault();
     // this part is converted to PHP,
     // because of the canvas element's
