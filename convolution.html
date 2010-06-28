@@ -3,141 +3,49 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <title>Canvas convolution demo</title>
-    <style type="text/css">
-    </style>
+    <link rel="stylesheet" href="convolution.css" />
+    <link rel="stylesheet" href="cupertino/jquery-ui-1.8.2.custom.css" />
     <script type="text/javascript"
       src="jquery-1.4.2.min.js"></script>
-    <script type="text/javascript">
-      // since spawning a worker is resource heavy
-      // we only do it once
-      var worker = new Worker('convolution.js');
-      
-      var masks = {};
-
-      masks.average = function() {
-        $('form#mask fieldset.mask input')
-          .val(1 / $('form#mask fieldset.mask input').size());
-      };
-
-      function getMask() {
-        var mask = [];
-        var masksize = $('form#mask input[type=range]').val();
-        var row = [];
-
-        $('form#mask fieldset.mask input').each(function(i, item) {
-          var val = parseFloat($(item).val());
-          if(isNaN(val)) {
-            val = 0.0;
-          }
-          row[row.length] = val;
-          if((i + 1) % masksize === 0) {
-            mask[mask.length] = row;
-            row = [];
-          }
-        });
-
-        return mask;
-      }
-
-      function setCanvasImage(canvas, url) {
-        $('#'+canvas).parent()
-        .html('')
-        .html('<canvas id="image"></canvas>');
-        var can = document.getElementById(canvas);
-        var ctx = can.getContext('2d');
-        var img = new Image();
-        img.onload = function() {
-          can.width = img.width;
-          can.height = img.height;
-          ctx.drawImage(img, 0, 0, img.width, img.height);
-        };
-        img.src = url;
-      }
-
-      $(function() {
-
-        $('a#apply-average-mask').click(function(event) {
-          event.preventDefault();
-          masks.average();
-          return false;
-        });
-
-        $('form#url').submit(function(event) {
-          event.preventDefault();
-          setCanvasImage('image', $('form#url input[name=image-url]').val());
-          return false;
-        });
-
-        $('form#url-randomcat').submit(function(event) {
-          event.preventDefault();
-          // this part is converted to PHP,
-          // because of the canvas element's
-          // same origin policy
-          setCanvasImage('image', 'randomcat.php');
-          return false;
-        });
-
-        $('form#mask').submit(function(event) {
-          event.preventDefault();
-          //doConvolution(document.getElementById('image'), getMask());
-          var canvas = document.getElementById('image');
-          var ctx = canvas.getContext('2d');
-          var w = canvas.width, h = canvas.height;
-          var input = ctx.getImageData(0, 0, w, h);
-          var result = ctx.createImageData(w, h);
-          worker.onmessage = function(event) {
-            document.getElementById('image')
-            .getContext('2d')
-            .putImageData(event.data, 0, 0);
-          }
-          worker.postMessage({
-            'input': input,
-            'result': result,
-            'w': w,
-            'h': h,
-            'mask': getMask()
-          });
-          return false;
-        });
-
-        $('form#mask input[type=range]')
-        .change(function() {
-          $('form#mask fieldset.mask input').remove();
-          var num = parseInt($(this).val(), 10);
-          var html = '';
-          for(var i = 0; i < num; i++) {
-            for(var j = 0; j < num; j++) {
-              html += "<input type=\"text\" value=\"0\" name=\"mask-" + i + "-" + j + "\" />\n";
-            }
-            html += '<br/>';
-          }
-          $('fieldset.mask').html(html);
-        })
-        .trigger('change');
-        
-      });
-    </script>
+    <script type="text/javascript"
+      src="jquery-ui-1.8.2.custom.min.js"></script>
+    <script type="text/javascript"
+      src="page.js"></script>
   </head>
   <body>
-    <h1> HTML5 Canvas convolution </h1>
-    <form action="" id="url">
-      <input type="text" name="image-url" />
-      <input type="submit" value="Set" />
-    </form>
-    <form action="" id="url-randomcat">
-      <input type="submit" value="Random cat" />
-    </form>
-    <form action="" id="mask">
-      <input type="range" name="convolution-mask" min="3" max="11" value="3" step="2" />
-      <fieldset class="mask">
-        <legend></legend>
-      </fieldset>
-      <section>
-        <header>Mask presets</header>
-        <p><a href="#" id="apply-average-mask">Average</a></p>
+    <section class="main">
+      <h1> HTML5 Canvas convolution </h1>
+      <section class="image-setter">
+        <header>Set image</header>
+        <form action="" id="url">
+          <input type="text" name="image-url" />
+          <input type="submit" value="Set" />
+        </form>
+        or
+        <form action="" id="url-randomcat">
+          <input type="submit" value="Random cat" />
+        </form>
       </section>
-      <input type="submit" value="Convolve" />
-    </form>
+      <form action="" id="mask">
+        <label>
+          Mask size:
+          <input type="range" name="convolution-mask" min="3" max="11" value="3" step="2" />
+        </label>
+        <fieldset class="mask">
+          <legend>Convolution mask (kernel)</legend>
+          <div></div>
+          <label>
+            <input type="checkbox" name="divide" />
+            Divide values with the sum of the mask
+          </label>
+        </fieldset>
+        <section class="presets">
+          <header>Mask presets</header>
+          <p><a href="#" id="apply-average-mask">Average</a></p>
+        </section>
+        <input type="submit" value="Convolve" />
+      </form>
+    </section>
     <div class="canvas-container"><canvas id="image"></canvas></div>
   </body>
 </html>

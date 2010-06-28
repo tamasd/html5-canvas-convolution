@@ -23,6 +23,10 @@ function doConvolution(input, result, w, h, mask) {
       // just copy the alpha channel
       result.data[pixel + alpha] = input.data[pixel + alpha];
     }
+    postMessage({
+      action: 'setProgress',
+      data: y
+    });
   }
   
   return result;
@@ -30,6 +34,13 @@ function doConvolution(input, result, w, h, mask) {
 
 onmessage = function(event) {
   var p = event.data;
+  postMessage({
+    action: 'initProgress',
+    data: p.h - 1,
+  });
   var result = doConvolution(p.input, p.result, p.w, p.h, p.mask);
-  postMessage(result);
+  postMessage({
+    action: 'display',
+    data: result
+  });
 }

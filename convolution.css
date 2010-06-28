@@ -1,0 +1,76 @@
+h1 {
+  margin-top: 0px;
+  cursor: pointer;
+}
+
+a#restore, a#minimize {
+  text-decoration: none;
+  color: dimgray;
+  font-size: small;
+}
+
+div.canvas-container {
+  clear: both;
+}
+
+section.main {
+  width: 454px;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid dimgray;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+}
+
+fieldset.mask input[type=text] {
+  width: 30px;
+}
+
+fieldset.mask {
+  width: 415px;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+  border: 1px solid dimgray;
+}
+
+fieldset.mask div {
+  text-align: center;
+}
+
+form#mask input[type=submit] {
+  margin-top: 10px;
+}
+
+section.image-setter {
+  border: 1px solid dimgray;
+  width: 432px;
+  padding: 5px;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+}
+
+section.presets {
+  overflow: hidden;
+  text-align: center;
+  width: 432px;
+  padding: 5px;
+  border: 1px dimgray solid;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+}
+
+section.presets a {
+  display: block;
+  float: left;
+  border: 1px dimgray solid;
+  padding: 4px;
+  text-decoration: none;
+  color: white;
+  background-color: dimgray;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
+div.ui-dialog-titlebar {
+  display: none;
+}
