@@ -132,7 +132,7 @@ $(function() {
     // this part is converted to PHP,
     // because of the canvas element's
     // same origin policy
-    setCanvasImage('image', 'randomcat.php');
+    setCanvasImage('image', 'randompic.php');
     return false;
   });
 
