@@ -46,27 +46,29 @@ function setMatrix(matrix, checkdivide) {
     .attr('checked', Boolean(checkdivide));
 }
 
-masks.average = function() {
-  $('form#mask fieldset.mask div input')
-    .val(1);
-  $('form#mask fieldset.mask input[name=divide]')
-    .attr('checked', true);
-};
-
-masks.weighted_average = function() {
+function newMatrix() {
   var matrix = [];
 
   var dimension = getMaskDimension();
+  dimension *= dimension;
 
-  for(var j = 0; j < dimension*dimension; j++) {
-    matrix[j] = 0;
+  for(var i = 0; i < dimension; i++) {
+    matrix[i] = 0;
   }
+
+  return matrix;
+}
+
+function generateMatrix(generator) {
+  var matrix = newMatrix();
+
+  var dimension = getMaskDimension();
 
   var max = Math.ceil(dimension / 2);
 
   for(var baseoffset = 0; baseoffset < dimension/2; baseoffset++) {
     for(var i = 0; i < max; i++) {
-      var item = Math.pow(2, baseoffset + i);
+      var item = generator(baseoffset, i);
 
       matrix[baseoffset*dimension + i] = item;
       matrix[baseoffset*dimension + (dimension - i - 1)] = item;
@@ -76,6 +78,19 @@ masks.weighted_average = function() {
   }
 
   setMatrix(matrix, true);
+}
+
+masks.average = function() {
+  $('form#mask fieldset.mask div input')
+    .val(1);
+  $('form#mask fieldset.mask input[name=divide]')
+    .attr('checked', true);
+};
+
+masks.weighted_average = function() {
+  generateMatrix(function(baseoffset, i) {
+    return Math.pow(2, baseoffset + i);
+  });
 }
 
 function getMaskDimension() {
