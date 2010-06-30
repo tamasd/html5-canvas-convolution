@@ -37,7 +37,6 @@ actions.setProgress = function(val) {
 var masks = {};
 
 function setMatrix(matrix, checkdivide) {
-  console.log(matrix);
   $('form#mask fieldset.mask div input')
     .each(function(i, item) {
       $(item).val(matrix[i]);
