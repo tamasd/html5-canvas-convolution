@@ -110,6 +110,17 @@ masks.general_gauss = function() {
   }, true);
 }
 
+masks.point_detection = function() {
+  var dimension = getMaskDimension();
+  var middle = Math.floor(dimension / 2);
+  var value = dimension*dimension - 1;
+  generateMatrix(function(baseoffset, i) {
+    return (baseoffset == middle && i == middle) ?
+      value:
+      -1;
+  }, false);
+}
+
 function getMaskDimension() {
   return $('form#mask input[type=range]')
     .val();
