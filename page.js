@@ -59,7 +59,7 @@ function newMatrix() {
   return matrix;
 }
 
-function generateMatrix(generator) {
+function generateMatrix(generator, divide) {
   var matrix = newMatrix();
 
   var dimension = getMaskDimension();
@@ -77,7 +77,7 @@ function generateMatrix(generator) {
     }
   }
 
-  setMatrix(matrix, true);
+  setMatrix(matrix, divide);
 }
 
 masks.average = function() {
@@ -90,7 +90,7 @@ masks.average = function() {
 masks.weighted_average = function() {
   generateMatrix(function(baseoffset, i) {
     return Math.pow(2, baseoffset + i);
-  });
+  }, true);
 }
 
 function gauss(x, y, sigma) {
@@ -107,7 +107,7 @@ masks.general_gauss = function() {
 
   generateMatrix(function(baseoffset, i) {
     return gauss(baseoffset - dimension, i - dimension, sigma);
-  });
+  }, true);
 }
 
 function getMaskDimension() {
