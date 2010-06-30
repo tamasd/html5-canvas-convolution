@@ -36,12 +36,34 @@ actions.setProgress = function(val) {
 
 var masks = {};
 
+function setMatrix(matrix, checkdivide) {
+  console.log(matrix);
+  $('form#mask fieldset.mask div input')
+    .each(function(i, item) {
+      $(item).val(matrix[i]);
+    });
+  $('form#mask fieldset.mask input[name=divide]')
+    .attr('checked', Boolean(checkdivide));
+}
+
 masks.average = function() {
   $('form#mask fieldset.mask div input')
     .val(1);
   $('form#mask fieldset.mask input[name=divide]')
     .attr('checked', true);
 };
+
+
+function getMaskDimension() {
+  return $('form#mask input[type=range]')
+    .val();
+}
+
+function getMaskSize() {
+  var masksize = $('form#mask input[type=range]')
+    .val();
+  return masksize * masksize;
+}
 
 function getMask() {
   var mask = [];
