@@ -67,6 +67,7 @@ section.presets a {
   text-decoration: none;
   color: white;
   background-color: dimgray;
+  margin: 5px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
 }
