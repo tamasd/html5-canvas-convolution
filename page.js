@@ -227,7 +227,7 @@ $(function() {
       .html(String(i.charAt(0).toUpperCase() + i.slice(1)).replace('_', ' '))
       .click(function(event) {
         event.preventDefault();
-        masks[$(this).attr('id').match(/^apply_([a-z_]*)_mask$/)[1]]();
+        masks[$(this).attr('id').match(/^apply_([A-Za-z_]*)_mask$/)[1]]();
         return false;
       });
     $('section.presets')
