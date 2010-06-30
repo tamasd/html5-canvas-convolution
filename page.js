@@ -135,6 +135,12 @@ $(function() {
     setCanvasImage('image', 'randompic.php');
     return false;
   });
+  $('form#url-randomcat')
+    .submit(function(event) {
+      event.preventDefault();
+      setCanvasImage('image', 'randompic.php?tags=cats');
+      return false;
+    });
 
   $('form#mask').submit(function(event) {
     event.preventDefault();
