@@ -36,6 +36,12 @@ actions.setProgress = function(val) {
 
 var masks = {};
 
+function setMatrixDimension(value) {
+  $('form#mask input[type=range]')
+    .val(value)
+    .change();
+}
+
 function setMatrix(matrix, checkdivide) {
   $('form#mask fieldset.mask div input')
     .each(function(i, item) {
@@ -118,6 +124,22 @@ masks.point_detection = function() {
       value:
       -1;
   }, false);
+}
+
+function set3x3GradientMaskX(p, q) {
+  setMatrix([
+    p, 0, -p,
+    q, 0, -q,
+    p, 0, -p
+  ], false);
+}
+
+function set3x3GradientMaskY(p, q) {
+  setMatrix([
+    p, q, p,
+    0, 0, 0,
+    -p, -q, -p
+  ], false);
 }
 
 function getMaskDimension() {
