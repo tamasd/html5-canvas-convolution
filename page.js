@@ -93,6 +93,23 @@ masks.weighted_average = function() {
   });
 }
 
+function gauss(x, y, sigma) {
+  return (1/(2*Math.PI*sigma*sigma))*Math.exp(-(x*x + y*y) / (2*sigma*sigma));
+}
+
+masks.general_gauss = function() {
+  var sigma = parseFloat(prompt('Enter the sigma parameter', 2));
+  if(isNaN(sigma)) {
+    sigma = 2;
+  }
+
+  var dimension = getMaskDimension();
+
+  generateMatrix(function(baseoffset, i) {
+    return gauss(baseoffset - dimension, i - dimension, sigma);
+  });
+}
+
 function getMaskDimension() {
   return $('form#mask input[type=range]')
     .val();
