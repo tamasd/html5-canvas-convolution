@@ -223,10 +223,11 @@ $(function() {
     var item = $('<a></a>');
     item
       .attr('href', '#')
+      .attr('id', 'apply_' + i + '_mask')
       .html(String(i.charAt(0).toUpperCase() + i.slice(1)).replace('_', ' '))
       .click(function(event) {
         event.preventDefault();
-        masks[i]();
+        masks[$(this).attr('id').match(/^apply_([a-z_]*)_mask$/)[1]]();
         return false;
       });
     $('section.presets')
