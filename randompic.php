@@ -7,7 +7,13 @@ header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 header('Content-Transfer-Encoding: binary');
 header('Accept-Ranges: bytes');
 
-$jsonp = file_get_contents('http://api.flickr.com/services/feeds/photos_public.gne?tags=bunny&tagmode=any&format=json&jsoncallback=?');
+$tags = 'bunny';
+
+if(isset($_GET['tags']) && preg_match('/^[a-z]*$/i', $_GET['tags'])) {
+  $tags = $_GET['tags'];
+}
+
+$jsonp = file_get_contents("http://api.flickr.com/services/feeds/photos_public.gne?tags={$tags}&tagmode=any&format=json&jsoncallback=?");
 
 $matches = array();
 $res = preg_match_all('#http:\/\/farm[0-9]+\.static\.flickr\.com\/[0-9]+\/[0-9]+_[0-9a-f]+_m.jpg#i', $jsonp, $matches);
