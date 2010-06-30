@@ -131,12 +131,19 @@ $(function() {
       window.location.reload();
     });
 
-  $('a#apply-average-mask')
-    .click(function(event) {
-      event.preventDefault();
-      masks.average();
-      return false;
-    });
+  for(var i in masks) {
+    var item = $('<a></a>');
+    item
+      .attr('href', '#')
+      .html(String(i.charAt(0).toUpperCase() + i.slice(1)).replace('_', ' '))
+      .click(function(event) {
+        event.preventDefault();
+        masks[i]();
+        return false;
+      });
+    $('section.presets')
+      .append(item);
+  }
 
   $('form#url')
     .submit(function(event) {
