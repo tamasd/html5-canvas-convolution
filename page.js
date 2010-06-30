@@ -51,13 +51,24 @@ function getMask() {
   var divide = $('form#mask fieldset.mask input[name=divide]')
   .attr('checked');
 
+  var divisor = 0;
+  if(divide) {
+    $('form#mask fieldset.mask input').each(function(i, item) {
+      var val = $(item).val();
+      if(isNaN(val)) {
+        val = 0.0;
+      }
+      divisor += parseFloat(val);
+    });
+  }
+
   $('form#mask fieldset.mask input').each(function(i, item) {
     var val = parseFloat($(item).val());
     if(isNaN(val)) {
       val = 0.0;
     }
     if(divide) {
-      val /= masksize * masksize;
+      val /= divisor;
     }
     row[row.length] = val;
     if((i + 1) % masksize === 0) {
