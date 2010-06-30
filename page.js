@@ -53,6 +53,30 @@ masks.average = function() {
     .attr('checked', true);
 };
 
+masks.weighted_average = function() {
+  var matrix = [];
+
+  var dimension = getMaskDimension();
+
+  for(var j = 0; j < dimension*dimension; j++) {
+    matrix[j] = 0;
+  }
+
+  var max = Math.ceil(dimension / 2);
+
+  for(var baseoffset = 0; baseoffset < dimension/2; baseoffset++) {
+    for(var i = 0; i < max; i++) {
+      var item = Math.pow(2, baseoffset + i);
+
+      matrix[baseoffset*dimension + i] = item;
+      matrix[baseoffset*dimension + (dimension - i - 1)] = item;
+      matrix[(dimension - baseoffset - 1)*dimension + i] = item;
+      matrix[(dimension - baseoffset - 1)*dimension + (dimension - i - 1)] = item;
+    }
+  }
+
+  setMatrix(matrix, true);
+}
 
 function getMaskDimension() {
   return $('form#mask input[type=range]')
