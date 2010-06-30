@@ -126,6 +126,36 @@ masks.point_detection = function() {
   }, false);
 }
 
+masks.prewitt_x = function() {
+  setMatrixDimension(3);
+  set3x3GradientMaskX(1, 1);
+}
+
+masks.prewitt_y = function() {
+  setMatrixDimension(3);
+  set3x3GradientMaskY(1, 1);
+}
+
+masks.sobel_x = function() {
+  setMatrixDimension(3);
+  set3x3GradientMaskX(1, 2);
+}
+
+masks.sobel_y = function() {
+  setMatrixDimension(3);
+  set3x3GradientMaskY(1, 2);
+}
+
+masks.FreiChen_x = function() {
+  setMatrixDimension(3);
+  set3x3GradientMaskX(1, Math.SQRT2);
+}
+
+masks.FreiChen_y = function() {
+  setMatrixDimension(3);
+  set3x3GradientMaskY(1, Math.SQRT2);
+}
+
 function set3x3GradientMaskX(p, q) {
   setMatrix([
     p, 0, -p,
