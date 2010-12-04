@@ -1,3 +1,8 @@
+
+body {
+  text-rendering: optimizeLegibility;
+}
+
 h1 {
   margin-top: 0px;
   cursor: pointer;
