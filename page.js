@@ -197,6 +197,14 @@ masks.LoG_5x5 = function() {
   ], false);
 }
 
+masks.triangular_5x5 = function() {
+  setMatrixDimension(5);
+  var sequence = [0, 0, 1, 2, 5];
+  generateMatrix(function(baseoffset, i) {
+    return sequence[baseoffset + i];
+  }, true);
+}
+
 function set3x3GradientMaskX(p, q) {
   setMatrix([
     p, 0, -p,
