@@ -568,6 +568,15 @@ function setCanvasImage(canvas, url) {
   img.src = url;
 }
 
+/**
+ * Returns a random string.
+ *
+ * @return {String}
+ */
+function getRandomString() {
+  return Math.random().toString().split('.')[1];
+}
+
 $(function() {
 
   $('h1')
@@ -625,13 +634,13 @@ $(function() {
       // this part is converted to PHP,
       // because of the canvas element's
       // same origin policy
-      setCanvasImage('image', 'randompic.php');
+      setCanvasImage('image', 'randompic.php?rnd=' + getRandomString());
       return false;
     });
   $('form#url-randomcat')
     .submit(function(event) {
       event.preventDefault();
-      setCanvasImage('image', 'randompic.php?tags=cats');
+      setCanvasImage('image', 'randompic.php?tags=cats&rnd=' + getRandomString());
       return false;
     });
 
@@ -639,7 +648,8 @@ $(function() {
     .submit(function(event) {
       event.preventDefault();
       var tag = $('form#url-random input[name=image-tag]').val();
-      setCanvasImage('image', 'randompic.php?tags=' + escape(tag));
+      setCanvasImage('image', 'randompic.php?tags=' + escape(tag) +
+        '&rnd=' + getRandomString());
       return false;
     });
 
