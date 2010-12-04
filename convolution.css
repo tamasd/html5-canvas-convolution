@@ -84,3 +84,13 @@ section.presets a {
 div.ui-dialog-titlebar {
   display: none;
 }
+
+div#convolution-progress-dialog {
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+div#convolution-progress-dialog progress {
+  text-align: center;
+}

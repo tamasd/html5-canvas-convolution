@@ -33,7 +33,8 @@ actions.display = function(data) {
  * Opens the progress bar in a dialog.
  */
 actions.initProgress = function(max) {
-  var dlg = $('<div id="convolution-progress-dialog"><progress>Calculating...</progress></div>')
+  var dlg = $('<div id="convolution-progress-dialog">' +
+    '<span>Calculating...</span><progress></progress></div>')
     .dialog(dialogopts);
 
   $('progress', dlg)
