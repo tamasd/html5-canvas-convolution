@@ -51,10 +51,12 @@ function setMatrix(matrix, checkdivide) {
     .attr('checked', Boolean(checkdivide));
 }
 
-function newMatrix() {
+function newMatrix(dimension) {
   var matrix = [];
 
-  var dimension = getMaskDimension();
+  if(dimension == null) {
+    dimension = getMaskDimension();
+  }
   dimension *= dimension;
 
   for(var i = 0; i < dimension; i++) {
