@@ -205,6 +205,122 @@ masks.triangular_5x5 = function() {
   }, true);
 }
 
+function rotateMatrix90(matrix) {
+  var retmtx = [];
+  var max = Math.sqrt(matrix.length);
+  var i = 1, j = 0;
+  while (i <= max) {
+    j = max - 1;
+    while (j >= 0) {
+      var index = j * max + i;
+      retmtx.push(matrix[index - 1]);
+      j--;
+    }
+    i++;
+  }
+
+  return retmtx;
+}
+
+function rotateMatrix180(matrix) {
+  var retmtx = matrix.slice(0);
+  return retmtx.reverse();
+}
+
+function rotateMatrix270(matrix) {
+  return rotateMatrix180(rotateMatrix90(matrix));
+}
+
+var compass_masks = {
+  Prewitt: [
+    [
+      1,  1, -1,
+      1, -2, -1,
+      1,  1, -1
+    ],
+    [
+      1, -1, -1,
+      1, -2, -1,
+      1,  1,  1
+    ]
+  ],
+  Robinson_3: [
+    [
+      1, 0, -1,
+      1, 0, -1,
+      1, 0, -1,
+    ],
+    [
+      0, -1, -1,
+      1,  0, -1,
+      1,  1,  0
+    ]
+  ],
+  Robinson_5: [
+    [
+      1, 0, -1,
+      2, 0, -2,
+      1, 0, -1
+    ],
+    [
+      0, -1, -2,
+      1,  0, -1,
+      2,  1,  0
+    ]
+  ],
+  Kirsch: [
+    [
+      5, -3, -3,
+      5,  0, -3,
+      5, -3, -3
+    ],
+    [
+      -3, -3, -3,
+       5,  0, -3,
+       5,  5, -3
+    ]
+  ]
+};
+
+function createCompassMask(name, E, NE) {
+  masks[name + '_E'] = function() {
+    setMatrixDimension(Math.sqrt(E.length));
+    setMatrix(E, false);
+  };
+  masks[name + '_NE'] = function() {
+    setMatrixDimension(Math.sqrt(E.length));
+    setMatrix(NE, false);
+  };
+  masks[name + '_N'] = function() {
+    setMatrixDimension(Math.sqrt(E.length));
+    setMatrix(rotateMatrix270(E), false);
+  };
+  masks[name + '_NW'] = function() {
+    setMatrixDimension(Math.sqrt(E.length));
+    setMatrix(rotateMatrix270(NE), false);
+  };
+  masks[name + '_W'] = function() {
+    setMatrixDimension(Math.sqrt(E.length));
+    setMatrix(rotateMatrix180(E), false);
+  };
+  masks[name + '_SW'] = function() {
+    setMatrixDimension(Math.sqrt(E.length));
+    setMatrix(rotateMatrix180(NE), false);
+  };
+  masks[name + '_S'] = function() {
+    setMatrixDimension(Math.sqrt(E.length));
+    setMatrix(rotateMatrix90(E), false);
+  };
+  masks[name + '_SE'] = function() {
+    setMatrixDimension(Math.sqrt(E.length));
+    setMatrix(rotateMatrix90(NE), false);
+  };
+}
+
+for(var name in compass_masks) {
+  createCompassMask(name, compass_masks[name][0], compass_masks[name][1]);
+}
+
 function set3x3GradientMaskX(p, q) {
   setMatrix([
     p, 0, -p,
