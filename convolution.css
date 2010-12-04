@@ -8,6 +8,10 @@ h1 {
   cursor: pointer;
 }
 
+section, header {
+  display: block;
+}
+
 a#restore, a#minimize {
   text-decoration: none;
   color: dimgray;
