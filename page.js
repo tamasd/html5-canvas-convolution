@@ -128,6 +128,24 @@ masks.point_detection = function() {
   }, false);
 }
 
+masks.roberts_x = function() {
+  setMatrixDimension(3);
+  setMatrix([
+    0, 0, -1,
+    0, 1, 0,
+    0, 0, 0
+  ], false);
+}
+
+masks.roberts_y = function() {
+  setMatrixDimension(3);
+  setMatrix([
+    -1, 0, 0,
+    0, 1, 0,
+    0, 0, 0
+  ], false);
+}
+
 masks.prewitt_x = function() {
   setMatrixDimension(3);
   set3x3GradientMaskX(1, 1);
