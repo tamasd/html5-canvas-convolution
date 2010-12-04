@@ -635,6 +635,14 @@ $(function() {
       return false;
     });
 
+  $('form#url-random')
+    .submit(function(event) {
+      event.preventDefault();
+      var tag = $('form#url-random input[name=image-tag]').val();
+      setCanvasImage('image', 'randompic.php?tags=' + escape(tag));
+      return false;
+    });
+
   $('form#mask')
     .submit(function(event) {
       event.preventDefault();
