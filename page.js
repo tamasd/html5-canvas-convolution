@@ -176,6 +176,16 @@ masks.FreiChen_y = function() {
   set3x3GradientMaskY(1, Math.SQRT2);
 }
 
+masks.scharr_x = function() {
+  setMatrixDimension(3);
+  set3x3GradientMaskX(3, 10);
+}
+
+masks.scharr_y = function() {
+  setMatrixDimension(3);
+  set3x3GradientMaskY(3, 10);
+}
+
 function set3x3GradientMaskX(p, q) {
   setMatrix([
     p, 0, -p,
