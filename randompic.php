@@ -9,14 +9,17 @@ header('Accept-Ranges: bytes');
 
 $tags = 'bunny';
 
-if(isset($_GET['tags']) && preg_match('/^[a-z]*$/i', $_GET['tags'])) {
+if (isset($_GET['tags']) && preg_match('/^[a-z]*$/i', $_GET['tags'])) {
   $tags = $_GET['tags'];
 }
 
-$jsonp = file_get_contents("http://api.flickr.com/services/feeds/photos_public.gne?tags={$tags}&tagmode=any&format=json&jsoncallback=?");
+$jsonp = file_get_contents("http://api.flickr.com/services/feeds/photos_public.gne" .
+  "?tags={$tags}&tagmode=any&format=json&jsoncallback=?");
 
 $matches = array();
-$res = preg_match_all('#http:\/\/farm[0-9]+\.static\.flickr\.com\/[0-9]+\/[0-9]+_[0-9a-f]+_m.jpg#i', $jsonp, $matches);
+$res = preg_match_all(
+  '#http:\/\/farm[0-9]+\.static\.flickr\.com\/[0-9]+\/[0-9]+_[0-9a-f]+_m.jpg#i',
+  $jsonp, $matches);
 
 $url = $matches[0][mt_rand(0, 39)];
 
