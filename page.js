@@ -186,6 +186,17 @@ masks.scharr_y = function() {
   set3x3GradientMaskY(3, 10);
 }
 
+masks.LoG_5x5 = function() {
+  setMatrixDimension(5);
+  setMatrix([
+     0,  0, -1,  0,  0,
+     0, -1, -2, -1,  0,
+    -1, -2, 16, -2, -1,
+     0, -1, -2, -1,  0,
+     0,  0, -1,  0,  0,
+  ], false);
+}
+
 function set3x3GradientMaskX(p, q) {
   setMatrix([
     p, 0, -p,
