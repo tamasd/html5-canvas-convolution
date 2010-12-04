@@ -1,3 +1,13 @@
+
+/**
+ * Implementation of the classical convolution algorithm.
+ *
+ * @param {Array} input canvas imagedata
+ * @param {Array} result canvas imagedata
+ * @param {int} w width
+ * @param {int} h height
+ * @param {Array} mask the convolution mask
+ */
 function doConvolution(input, result, w, h, mask) {
   // floor instead of ceil, because we are
   // indexing from 0
@@ -23,15 +33,19 @@ function doConvolution(input, result, w, h, mask) {
       // just copy the alpha channel
       result.data[pixel + alpha] = input.data[pixel + alpha];
     }
+    // posting a message to update the progress meter
     postMessage({
       action: 'setProgress',
       data: y
     });
   }
-  
+
   return result;
 }
 
+/**
+ * Event handler for 'onmessage'.
+ */
 onmessage = function(event) {
   var p = event.data;
   postMessage({

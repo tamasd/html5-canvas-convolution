@@ -2,6 +2,9 @@
 // we only do it once
 var worker = new Worker('convolution.js');
 
+/**
+ * jQuery UI dialog default options.
+ */
 var dialogopts = {
   autoOpen: false,
   closeOnEscape: false,
@@ -9,8 +12,16 @@ var dialogopts = {
   resizable: false
 };
 
+/**
+ * Container for the action functions.
+ *
+ * These functions are the part of the event handling system.
+ */
 var actions = {};
 
+/**
+ * Closes the imag loading overlay and displays the downloaded image.
+ */
 actions.display = function(data) {
   $('a.ui-dialog-titlebar-close').trigger('click');
   document.getElementById('image')
@@ -18,10 +29,13 @@ actions.display = function(data) {
     .putImageData(data, 0, 0);
 };
 
+/**
+ * Opens the progress bar in a dialog.
+ */
 actions.initProgress = function(max) {
   var dlg = $('<div id="convolution-progress-dialog"><progress>Calculating...</progress></div>')
     .dialog(dialogopts);
-  
+
   $('progress', dlg)
     .attr('max', max)
     .attr('value', 0);
@@ -29,19 +43,36 @@ actions.initProgress = function(max) {
   dlg.dialog('open');
 };
 
+/**
+ * Updates the progress bar value.
+ */
 actions.setProgress = function(val) {
   $('div#convolution-progress-dialog progress')
     .attr('value', val);
 };
 
+/**
+ * List of the available convolution masks.
+ */
 var masks = {};
 
+/**
+ * Sets the matrix dimension.
+ *
+ * @param {Integer} value
+ */
 function setMatrixDimension(value) {
   $('form#mask input[type=range]')
     .val(value)
     .change();
 }
 
+/**
+ * Displays a matrix in the UI.
+ *
+ * @param {Array} matrix
+ * @param {Boolean} checkdivide
+ */
 function setMatrix(matrix, checkdivide) {
   $('form#mask fieldset.mask div input')
     .each(function(i, item) {
@@ -51,6 +82,12 @@ function setMatrix(matrix, checkdivide) {
     .attr('checked', Boolean(checkdivide));
 }
 
+/**
+ * Creates an empty matrix.
+ *
+ * @param {Integer} dimension
+ * @return {Array}
+ */
 function newMatrix(dimension) {
   var matrix = [];
 
@@ -66,6 +103,12 @@ function newMatrix(dimension) {
   return matrix;
 }
 
+/**
+ * Generates a matrix with a generator function.
+ *
+ * @param {function} generator
+ * @param {Boolean} divide
+ */
 function generateMatrix(generator, divide) {
   var matrix = newMatrix();
 
@@ -87,6 +130,9 @@ function generateMatrix(generator, divide) {
   setMatrix(matrix, divide);
 }
 
+/**
+ * Average mask.
+ */
 masks.average = function() {
   $('form#mask fieldset.mask div input')
     .val(1);
@@ -94,16 +140,25 @@ masks.average = function() {
     .attr('checked', true);
 };
 
+/**
+ * Weighted average mask.
+ */
 masks.weighted_average = function() {
   generateMatrix(function(baseoffset, i) {
     return Math.pow(2, baseoffset + i);
   }, true);
 }
 
+/**
+ * Gauss function.
+ */
 function gauss(x, y, sigma) {
   return (1/(2*Math.PI*sigma*sigma))*Math.exp(-(x*x + y*y) / (2*sigma*sigma));
 }
 
+/**
+ * General gauss mask.
+ */
 masks.general_gauss = function() {
   var sigma = parseFloat(prompt('Enter the sigma parameter', 2));
   if(isNaN(sigma)) {
@@ -117,6 +172,9 @@ masks.general_gauss = function() {
   }, true);
 }
 
+/**
+ * Point detector mask.
+ */
 masks.point_detection = function() {
   var dimension = getMaskDimension();
   var middle = Math.floor(dimension / 2);
@@ -128,6 +186,9 @@ masks.point_detection = function() {
   }, false);
 }
 
+/**
+ * Roberts X mask.
+ */
 masks.roberts_x = function() {
   setMatrixDimension(3);
   setMatrix([
@@ -137,6 +198,9 @@ masks.roberts_x = function() {
   ], false);
 }
 
+/**
+ * Roberts Y mask.
+ */
 masks.roberts_y = function() {
   setMatrixDimension(3);
   setMatrix([
@@ -146,46 +210,73 @@ masks.roberts_y = function() {
   ], false);
 }
 
+/**
+ * Prewitt X mask.
+ */
 masks.prewitt_x = function() {
   setMatrixDimension(3);
   set3x3GradientMaskX(1, 1);
 }
 
+/**
+ * Prewitt Y mask.
+ */
 masks.prewitt_y = function() {
   setMatrixDimension(3);
   set3x3GradientMaskY(1, 1);
 }
 
+/**
+ * Sobel X mask.
+ */
 masks.sobel_x = function() {
   setMatrixDimension(3);
   set3x3GradientMaskX(1, 2);
 }
 
+/**
+ * Sobel Y mask.
+ */
 masks.sobel_y = function() {
   setMatrixDimension(3);
   set3x3GradientMaskY(1, 2);
 }
 
+/**
+ * Frei-Chen X mask.
+ */
 masks.FreiChen_x = function() {
   setMatrixDimension(3);
   set3x3GradientMaskX(1, Math.SQRT2);
 }
 
+/**
+ * Frei-Chen Y mask.
+ */
 masks.FreiChen_y = function() {
   setMatrixDimension(3);
   set3x3GradientMaskY(1, Math.SQRT2);
 }
 
+/**
+ * Scharr X mask.
+ */
 masks.scharr_x = function() {
   setMatrixDimension(3);
   set3x3GradientMaskX(3, 10);
 }
 
+/**
+ * Scharr Y mask.
+ */
 masks.scharr_y = function() {
   setMatrixDimension(3);
   set3x3GradientMaskY(3, 10);
 }
 
+/**
+ * 5x5 approximation of the LoG function.
+ */
 masks.LoG_5x5 = function() {
   setMatrixDimension(5);
   setMatrix([
@@ -197,6 +288,9 @@ masks.LoG_5x5 = function() {
   ], false);
 }
 
+/**
+ * Triangular 5x5 mask.
+ */
 masks.triangular_5x5 = function() {
   setMatrixDimension(5);
   var sequence = [0, 0, 1, 2, 5];
@@ -205,6 +299,12 @@ masks.triangular_5x5 = function() {
   }, true);
 }
 
+/**
+ * Rotates a matrix by 90 degrees.
+ *
+ * @param {Array} matrix
+ * @return {Array}
+ */
 function rotateMatrix90(matrix) {
   var retmtx = [];
   var max = Math.sqrt(matrix.length);
@@ -222,15 +322,30 @@ function rotateMatrix90(matrix) {
   return retmtx;
 }
 
+/**
+ * Rotates a matrix by 180 degrees.
+ *
+ * @param {Array} matrix
+ * @return {Array}
+ */
 function rotateMatrix180(matrix) {
   var retmtx = matrix.slice(0);
   return retmtx.reverse();
 }
 
+/**
+ * Rotates a matrix by 270 degrees.
+ *
+ * @param {Array} matrix
+ * @return {Array}
+ */
 function rotateMatrix270(matrix) {
   return rotateMatrix180(rotateMatrix90(matrix));
 }
 
+/**
+ * Basic compass masks.
+ */
 var compass_masks = {
   Prewitt: [
     [
@@ -282,6 +397,17 @@ var compass_masks = {
   ]
 };
 
+/**
+ * This function creates compass masks by
+ * rotating the basic compass masks.
+ *
+ * @param {String} name
+ * Name of the mask.
+ * @param {Array} E
+ * East matrix.
+ * @param {Array} NE
+ * North-east matrix.
+ */
 function createCompassMask(name, E, NE) {
   masks[name + '_E'] = function() {
     setMatrixDimension(Math.sqrt(E.length));
@@ -321,6 +447,12 @@ for(var name in compass_masks) {
   createCompassMask(name, compass_masks[name][0], compass_masks[name][1]);
 }
 
+/**
+ * Sets a 3x3 X gradient mask.
+ *
+ * @param {Integer} p
+ * @param {Integer} q
+ */
 function set3x3GradientMaskX(p, q) {
   setMatrix([
     p, 0, -p,
@@ -329,6 +461,12 @@ function set3x3GradientMaskX(p, q) {
   ], false);
 }
 
+/**
+ * Sets a 3x3 Y gradient mask.
+ *
+ * @param {Integer} p
+ * @param {Integer} q
+ */
 function set3x3GradientMaskY(p, q) {
   setMatrix([
     p, q, p,
@@ -337,17 +475,32 @@ function set3x3GradientMaskY(p, q) {
   ], false);
 }
 
+/**
+ * Returns the mask dimension.
+ *
+ * @return {Integer}
+ */
 function getMaskDimension() {
   return $('form#mask input[type=range]')
     .val();
 }
 
+/**
+ * Returns the mask size.
+ *
+ * @return {Integer}
+ */
 function getMaskSize() {
   var masksize = $('form#mask input[type=range]')
     .val();
   return masksize * masksize;
 }
 
+/**
+ * Returns the mask.
+ *
+ * @return {Array}
+ */
 function getMask() {
   var mask = [];
   var masksize = $('form#mask input[type=range]')
@@ -388,6 +541,14 @@ function getMask() {
   return mask;
 }
 
+/**
+ * Puts an image to the canvas.
+ *
+ * @param {String} canvas
+ * The id of the canvas.
+ * @param {String} url
+ * URL of the image.
+ */
 function setCanvasImage(canvas, url) {
   $('#'+canvas).parent()
     .html('')
