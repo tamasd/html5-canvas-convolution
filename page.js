@@ -441,10 +441,10 @@ $(function() {
     item
       .attr('href', '#')
       .attr('id', 'apply_' + i + '_mask')
-      .html(String(i.charAt(0).toUpperCase() + i.slice(1)).replace('_', ' '))
+      .html(String(i.charAt(0).toUpperCase() + i.slice(1)).replace(/_/g, ' '))
       .click(function(event) {
         event.preventDefault();
-        masks[$(this).attr('id').match(/^apply_([A-Za-z_]*)_mask$/)[1]]();
+        masks[$(this).attr('id').match(/^apply_([A-Za-z_0-9]*)_mask$/)[1]]();
         return false;
       });
     $('section.presets')
