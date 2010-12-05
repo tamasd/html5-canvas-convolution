@@ -80,6 +80,14 @@
         </section>
         <input type="submit" value="Convolve" />
       </form>
+      <form action="dlproxy.php" id="download-image" method="POST">
+        <label for="name">
+          Filename (without .png):
+        </label>
+        <input type="text" name="name" id="name" />
+        <input type="hidden" name="data" />
+        <input type="submit" value="Save as PNG" />
+      </form>
     </section>
     <div class="canvas-container"><canvas id="image"></canvas></div>
   </body>

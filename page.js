@@ -654,6 +654,14 @@ $(function() {
       return false;
     });
 
+  $('form#download-image')
+    .submit(function() {
+      $('input[name=data]', $(this)).val(
+        // parsing out the base64 encoded string from the data url
+        document.getElementById("image").toDataURL().split(',', 2)[1]
+      );
+    });
+
   $('form#mask')
     .submit(function(event) {
       event.preventDefault();

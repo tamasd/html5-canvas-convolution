@@ -94,3 +94,9 @@ div#convolution-progress-dialog {
 div#convolution-progress-dialog progress {
   text-align: center;
 }
+
+form#download-image {
+  border: 1px solid black;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
